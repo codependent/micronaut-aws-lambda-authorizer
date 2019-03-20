@@ -1,0 +1,29 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: AWS MicronautAwsLambdaAuthorizer API - micronaut.aws.lambda.authorizer::micronaut-aws-lambda-authorizer
+Globals:
+  Api:
+    EndpointConfiguration: REGIONAL
+Resources:
+  MicronautAwsLambdaAuthorizerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: micronaut.aws.lambda.authorizer.StreamLambdaHandler::handleRequest
+      Runtime: java8
+      CodeUri: build/distributions/micronaut-aws-lambda-authorizer-0.1.zip
+      MemorySize: 512
+      Policies: AWSLambdaBasicExecutionRole
+      Timeout: 15
+      Events:
+        GetResource:
+          Type: Api
+          Properties:
+            Path: /{proxy+}
+            Method: any
+
+Outputs:
+  MicronautAwsLambdaAuthorizerApi:
+    Description: URL for application
+    Value: !Sub 'https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/ping'
+    Export:
+      Name: MicronautAwsLambdaAuthorizerApi
